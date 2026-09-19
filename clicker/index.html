@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Waifu Clicker</title>
-  <meta name="description" content="Jogo clicker de navegador: faça carinho, junte corações e conquiste waifus originais.">
+  <meta name="description" content="Jogo clicker de navegador: faça carinho, junte corações e conquiste waifus.">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -25,6 +25,7 @@
       </div>
 
       <div class="hud-actions">
+        <button type="button" class="chip" id="fx-btn" aria-pressed="true">Efeitos: ligados</button>
         <button type="button" class="chip" id="save-btn">Salvar</button>
         <button type="button" class="chip chip-danger" id="reset-btn">Recomeçar</button>
       </div>
@@ -35,7 +36,7 @@
       <!-- Palco: a waifu que você acaricia -->
       <section class="stage" id="stage" aria-label="Palco">
         <div class="stage-title">
-          <h2 id="waifu-name">Sakura</h2>
+          <h2 id="waifu-name">Miku</h2>
           <span class="badge" id="waifu-level">Nível 1</span>
         </div>
 
@@ -47,6 +48,10 @@
         </div>
 
         <div class="click-stat"><b id="per-click">+1</b> corações por toque</div>
+
+        <button type="button" class="talk-btn" id="talk-btn" aria-disabled="false">
+          <span aria-hidden="true">💬</span> <span id="talk-label">Conversar</span>
+        </button>
 
         <div class="affection">
           <div class="affection-label">
@@ -64,6 +69,7 @@
           <button type="button" class="tab" role="tab" id="tab-upgrades" aria-controls="pane-upgrades" aria-selected="true">Melhorias</button>
           <button type="button" class="tab" role="tab" id="tab-collection" aria-controls="pane-collection" aria-selected="false" tabindex="-1">Coleção</button>
           <button type="button" class="tab" role="tab" id="tab-achievements" aria-controls="pane-achievements" aria-selected="false" tabindex="-1">Conquistas</button>
+          <button type="button" class="tab" role="tab" id="tab-rings" aria-controls="pane-rings" aria-selected="false" tabindex="-1">Anéis<span class="tab-dot" id="rings-dot" hidden></span></button>
         </div>
 
         <div class="pane-wrap">
@@ -96,16 +102,63 @@
             <p class="pane-note" id="achievements-summary"></p>
             <ul class="achievements" id="achievements"></ul>
           </section>
+
+          <!-- Reencarnação -->
+          <section class="pane" id="pane-rings" role="tabpanel" aria-labelledby="tab-rings" hidden>
+            <p class="pane-note">
+              Reencarnar reinicia seus corações, melhorias de toque e atividades em troca de
+              Anéis de Compromisso. Você mantém waifus, afeto, conquistas e tudo o que comprar com anéis.
+            </p>
+
+            <div class="ring-box">
+              <div class="ring-stat"><span class="ring-num" id="rings-owned">0</span>anéis para gastar</div>
+              <div class="ring-stat"><span class="ring-num" id="reinc-count">0</span>reencarnações</div>
+            </div>
+
+            <button type="button" class="reinc-btn cant" id="reinc-btn" aria-disabled="true">
+              <span class="reinc-title" id="reinc-title">Ainda não dá para reencarnar</span>
+              <span class="reinc-sub" id="reinc-sub"></span>
+            </button>
+
+            <h3 class="pane-heading">Bênçãos permanentes</h3>
+            <div class="list" id="list-rings"></div>
+          </section>
         </div>
       </aside>
     </main>
   </div>
 
+  <!-- Conversa com a waifu -->
+  <dialog class="talk" id="talk" aria-labelledby="talk-name">
+    <div class="talk-card">
+      <div class="talk-head">
+        <div class="talk-art" id="talk-art"></div>
+        <div>
+          <h2 id="talk-name"></h2>
+          <p class="talk-hint">Escolha a resposta que combina com ela.</p>
+        </div>
+      </div>
+
+      <p class="talk-question" id="talk-question"></p>
+      <div class="talk-choices" id="talk-choices"></div>
+
+      <div class="talk-result" id="talk-result" hidden>
+        <p class="talk-reply" id="talk-reply"></p>
+        <p class="talk-reward" id="talk-reward"></p>
+        <button type="button" class="chip" id="talk-close">Continuar</button>
+      </div>
+
+      <button type="button" class="chip talk-cancel" id="talk-cancel">Agora não</button>
+    </div>
+  </dialog>
+
   <!-- Camadas de efeitos e avisos -->
   <div id="fx" aria-hidden="true"></div>
   <div id="toasts" aria-live="polite"></div>
 
-  <!-- Script principal do seu jogo -->
+  <!-- Efeito sonoro de voz Anime (Baka!) -->
+  <audio id="baka-sound" preload="auto" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3"></audio>
+
   <script src="script.js"></script>
 </body>
 </html>
