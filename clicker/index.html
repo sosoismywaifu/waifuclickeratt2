@@ -11,6 +11,34 @@
   <link href="https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E💗%3C/text%3E%3C/svg%3E">
+
+  <style>
+    /* Efeito de onda / bolinha ao clicar na tela */
+    .click-ripple {
+      position: fixed;
+      width: 20px;
+      height: 20px;
+      margin-left: -10px;
+      margin-top: -10px;
+      border-radius: 50%;
+      background: rgba(255, 105, 180, 0.6);
+      box-shadow: 0 0 10px rgba(255, 105, 180, 0.8);
+      pointer-events: none;
+      z-index: 9999;
+      animation: rippleEffect 0.25s ease-out forwards;
+    }
+
+    @keyframes rippleEffect {
+      0% {
+        transform: scale(0.5);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(2.5);
+        opacity: 0;
+      }
+    }
+  </style>
 </head>
 <body>
   <div class="app">
@@ -156,9 +184,54 @@
   <div id="fx" aria-hidden="true"></div>
   <div id="toasts" aria-live="polite"></div>
 
-  <!-- Efeito sonoro de voz Anime (Baka!) -->
+  <!-- Efeitos sonoros -->
   <audio id="baka-sound" preload="auto" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3"></audio>
 
   <script src="script.js"></script>
+
+  <!-- Script dos efeitos globais de clique -->
+  <script>
+    // Sintetizador Web Audio API para som de clique leve e rápido sem necessidade de arquivos externos
+    const clickAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    function playClickSound() {
+      if (clickAudioCtx.state === 'suspended') {
+        clickAudioCtx.resume();
+      }
+      const osc = clickAudioCtx.createOscillator();
+      const gain = clickAudioCtx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(800, clickAudioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(400, clickAudioCtx.currentTime + 0.04);
+
+      gain.gain.setValueAtTime(0.15, clickAudioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, clickAudioCtx.currentTime + 0.04);
+
+      osc.connect(gain);
+      gain.connect(clickAudioCtx.destination);
+
+      osc.start();
+      osc.stop(clickAudioCtx.currentTime + 0.04);
+    }
+
+    // Evento de clique global para tocar o som e criar a bolinha
+    document.addEventListener('click', (e) => {
+      // Toca o som de clique
+      playClickSound();
+
+      // Cria a bolinha na posição do mouse
+      const ripple = document.createElement('div');
+      ripple.className = 'click-ripple';
+      ripple.style.left = `${e.clientX}px`;
+      ripple.style.top = `${e.clientY}px`;
+      document.body.appendChild(ripple);
+
+      // Remove o elemento após o término da animação (250ms)
+      setTimeout(() => {
+        ripple.remove();
+      }, 250);
+    });
+  </script>
 </body>
 </html>
