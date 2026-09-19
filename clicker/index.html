@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Waifu Clicker</title>
+  <meta name="description" content="Jogo clicker de navegador: faça carinho, junte corações e conquiste waifus originais.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E💗%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+  <div class="app">
+
+    <!-- Topo: nome, corações e ações -->
+    <header class="hud">
+      <div class="brand">Waifu Clicker</div>
+
+      <div class="wallet">
+        <div class="hearts"><span class="hearts-icon" aria-hidden="true">♥</span><span id="hearts">0</span></div>
+        <div class="rate"><span id="cps">0</span> corações por segundo</div>
+      </div>
+
+      <div class="hud-actions">
+        <button type="button" class="chip" id="save-btn">Salvar</button>
+        <button type="button" class="chip chip-danger" id="reset-btn">Recomeçar</button>
+      </div>
+    </header>
+
+    <main class="game">
+
+      <!-- Palco: a waifu que você acaricia -->
+      <section class="stage" id="stage" aria-label="Palco">
+        <div class="stage-title">
+          <h2 id="waifu-name">Sakura</h2>
+          <span class="badge" id="waifu-level">Nível 1</span>
+        </div>
+
+        <div class="spotlight">
+          <div class="bubble" id="bubble" role="status" aria-live="polite"></div>
+          <button type="button" class="waifu-btn" id="waifu-btn" aria-label="Fazer carinho">
+            <div class="waifu-art" id="waifu-art"></div>
+          </button>
+        </div>
+
+        <div class="click-stat"><b id="per-click">+1</b> corações por toque</div>
+
+        <div class="affection">
+          <div class="affection-label">
+            <span>Afeto</span>
+            <span id="affection-text">0 / 8</span>
+          </div>
+          <div class="bar"><div class="bar-fill" id="affection-fill"></div></div>
+          <p class="affection-hint">Cada nível de afeto aumenta em 5% os corações por toque.</p>
+        </div>
+      </section>
+
+      <!-- Painel lateral -->
+      <aside class="panel">
+        <div class="tabs" role="tablist" aria-label="Seções do jogo">
+          <button type="button" class="tab" role="tab" id="tab-upgrades" aria-controls="pane-upgrades" aria-selected="true">Melhorias</button>
+          <button type="button" class="tab" role="tab" id="tab-collection" aria-controls="pane-collection" aria-selected="false" tabindex="-1">Coleção</button>
+          <button type="button" class="tab" role="tab" id="tab-achievements" aria-controls="pane-achievements" aria-selected="false" tabindex="-1">Conquistas</button>
+        </div>
+
+        <div class="pane-wrap">
+          <!-- Melhorias -->
+          <section class="pane" id="pane-upgrades" role="tabpanel" aria-labelledby="tab-upgrades">
+            <div class="buy-row">
+              <span>Comprar</span>
+              <div class="seg" id="buy-amount" role="group" aria-label="Quantidade por compra">
+                <button type="button" data-amount="1" aria-pressed="true">1</button>
+                <button type="button" data-amount="10" aria-pressed="false">10</button>
+                <button type="button" data-amount="max" aria-pressed="false">Máx</button>
+              </div>
+            </div>
+
+            <h3 class="pane-heading">Seu toque</h3>
+            <div class="list" id="list-click"></div>
+
+            <h3 class="pane-heading">Momentos juntos</h3>
+            <div class="list" id="list-gen"></div>
+          </section>
+
+          <!-- Coleção -->
+          <section class="pane" id="pane-collection" role="tabpanel" aria-labelledby="tab-collection" hidden>
+            <p class="pane-note" id="collection-summary"></p>
+            <div class="collection" id="collection"></div>
+          </section>
+
+          <!-- Conquistas -->
+          <section class="pane" id="pane-achievements" role="tabpanel" aria-labelledby="tab-achievements" hidden>
+            <p class="pane-note" id="achievements-summary"></p>
+            <ul class="achievements" id="achievements"></ul>
+          </section>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <!-- Camadas de efeitos e avisos -->
+  <div id="fx" aria-hidden="true"></div>
+  <div id="toasts" aria-live="polite"></div>
+
+  <!-- Script principal do seu jogo -->
+  <script src="script.js"></script>
+</body>
+</html>
