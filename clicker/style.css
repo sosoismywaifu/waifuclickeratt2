@@ -1,5 +1,5 @@
 /* =========================================================
-   Kokoro Clicker — estilo "adesivo": contornos grossos e
+   Waifu Clicker — estilo "adesivo": contornos grossos e
    sombras duras, noite de ameixa com rosa sakura.
    A cor de destaque (--accent) muda conforme a waifu.
    ========================================================= */
@@ -100,7 +100,7 @@ button { font: inherit; color: inherit; }
 .hearts-icon { font-size: 0.8em; }
 .rate { font-size: 0.9rem; font-weight: 700; }
 
-.hud-actions { justify-self: end; display: flex; gap: 10px; }
+.hud-actions { justify-self: end; display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; }
 
 .chip {
   padding: 6px 16px;
@@ -189,6 +189,8 @@ button { font: inherit; color: inherit; }
   touch-action: manipulation;
 }
 .waifu-btn:focus-visible { outline-offset: 6px; }
+/* Pulso ao tocar: encolhe um pouco, volta e solta um anel na cor da waifu */
+.waifu-btn.tap { animation: tap 0.3s cubic-bezier(0.3, 1.5, 0.5, 1); }
 .waifu-art, .waifu-art img { display: block; width: 100%; height: 100%; }
 .waifu-art img {
   object-fit: cover;
@@ -197,7 +199,7 @@ button { font: inherit; color: inherit; }
 }
 /* Quando a imagem não carrega */
 .no-img { display: grid; place-items: center; padding: 10px; text-align: center; background: var(--plum); }
-.no-img::after { content: "Imagem não encontrada"; font-size: 0.85rem; font-weight: 700; color: var(--muted); }
+.no-img::after { content: attr(data-msg); font-size: 0.85rem; font-weight: 700; color: var(--muted); }
 
 .bubble {
   position: absolute;
@@ -230,6 +232,23 @@ button { font: inherit; color: inherit; }
   font-size: 1.35rem;
   color: var(--text);
 }
+
+.talk-btn {
+  padding: 8px 20px;
+  font-weight: 700;
+  background: var(--plum-2);
+  border: 3px solid var(--line);
+  border-radius: 999px;
+  box-shadow: 0 3px 0 var(--line);
+  cursor: pointer;
+}
+.talk-btn:not(.ready) { opacity: 0.65; cursor: not-allowed; }
+.talk-btn.ready {
+  color: #0f3b2c;
+  background: var(--mint);
+  animation: talkPulse 1.4s ease-in-out infinite;
+}
+.talk-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--line); }
 
 .affection { width: min(400px, 100%); }
 .affection-label {
@@ -276,8 +295,11 @@ button { font: inherit; color: inherit; }
   padding: 12px 12px 0;
 }
 .tab {
+  position: relative;
   flex: 1;
-  padding: 8px 6px;
+  padding: 8px 4px;
+  font-size: 0.92rem;
+  white-space: nowrap;
   font-weight: 700;
   background: var(--plum-2);
   border: 3px solid var(--line);
@@ -418,6 +440,127 @@ button.card:hover { background: #46367a; }
 .ach strong { display: block; }
 .ach span { font-size: 0.85rem; color: var(--muted); }
 
+/* Reencarnação */
+
+.tab-dot {
+  position: absolute;
+  top: -5px;
+  right: -3px;
+  width: 15px;
+  height: 15px;
+  background: var(--gold);
+  border: 3px solid var(--line);
+  border-radius: 50%;
+}
+.ring-box { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.ring-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+  font-size: 0.85rem;
+  text-align: center;
+  color: var(--muted);
+  background: var(--plum-2);
+  border: 3px solid var(--line);
+  border-radius: 18px;
+  box-shadow: 0 3px 0 var(--line);
+}
+.ring-num { font-family: var(--font-display); font-size: 1.7rem; line-height: 1.1; color: var(--gold); }
+.reinc-btn {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  padding: 12px 14px;
+  text-align: center;
+  color: #3a2600;
+  background: var(--gold);
+  border: 3px solid var(--line);
+  border-radius: 20px;
+  box-shadow: 0 4px 0 var(--line);
+  cursor: pointer;
+}
+.reinc-btn:active:not(.cant) { transform: translateY(2px); box-shadow: 0 2px 0 var(--line); }
+.reinc-btn.cant { color: var(--muted); background: var(--plum-2); cursor: not-allowed; }
+.reinc-title { font-family: var(--font-display); font-size: 1.1rem; }
+.reinc-sub { font-size: 0.85rem; font-weight: 700; }
+.item.ring-item:not(.cant) .item-cost { color: var(--gold); }
+
+/* Conversa */
+
+dialog.talk {
+  width: min(520px, 92vw);
+  max-width: none;
+  padding: 0;
+  margin: auto;
+  color: var(--text);
+  background: transparent;
+  border: 0;
+}
+dialog.talk::backdrop { background: rgba(18, 10, 36, 0.72); backdrop-filter: blur(3px); }
+.talk-card {
+  padding: 18px;
+  background: var(--plum);
+  border: 3px solid var(--line);
+  border-radius: 28px;
+  box-shadow: 0 6px 0 var(--line);
+}
+.talk-head { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+.talk-art {
+  flex: none;
+  width: 76px;
+  height: 76px;
+  overflow: hidden;
+  background: var(--plum-2);
+  border: 3px solid var(--line);
+  border-radius: 20px;
+}
+.talk-art img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.talk-art.no-img::after { content: ""; }
+.talk-head h2 { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: 1.5rem; }
+.talk-hint { margin: 0; font-size: 0.9rem; color: var(--muted); }
+.talk-question {
+  margin: 0 0 14px;
+  padding: 12px 16px;
+  font-weight: 700;
+  color: #2b0f24;
+  background: #fff;
+  border: 3px solid var(--line);
+  border-radius: 20px 20px 20px 4px;
+  box-shadow: var(--shadow);
+}
+.talk-choices { display: flex; flex-direction: column; gap: 10px; }
+.choice {
+  padding: 10px 14px;
+  text-align: left;
+  font-weight: 700;
+  color: var(--text);
+  background: var(--plum-2);
+  border: 3px solid var(--line);
+  border-radius: 16px;
+  box-shadow: 0 3px 0 var(--line);
+  cursor: pointer;
+}
+.choice:hover:not(:disabled) { background: #46367a; }
+.choice:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 1px 0 var(--line); }
+.choice:disabled { cursor: default; color: var(--text); opacity: 0.55; }
+.choice.right { opacity: 1; background: #2a7d5f; }
+.choice.wrong { opacity: 1; background: #7a2f55; }
+.talk-result { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; margin-top: 14px; }
+.talk-reply {
+  margin: 0;
+  padding: 10px 14px;
+  font-weight: 700;
+  color: #2b0f24;
+  background: #fff;
+  border: 3px solid var(--line);
+  border-radius: 20px 20px 20px 4px;
+}
+.talk-reward { margin: 0; font-family: var(--font-display); font-size: 1.15rem; color: var(--gold); }
+.talk-reward.none { font-family: var(--font-body); font-size: 0.95rem; font-weight: 700; color: var(--muted); }
+.talk-cancel { margin-top: 14px; }
+
 /* ---------- Coração raro ---------- */
 
 .golden {
@@ -448,14 +591,21 @@ button.card:hover { background: #46367a; }
 .float {
   position: fixed;
   font-family: var(--font-display);
-  font-size: 1.5rem;
+  font-size: 1.7rem;
   color: #fff;
   paint-order: stroke fill;
   -webkit-text-stroke: 6px var(--line);
   transform: translate(-50%, -50%);
-  animation: floatUp 0.95s cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
+  animation: floatUp 1.25s ease-out forwards;
 }
 .float.gold { color: var(--gold); font-size: 2rem; }
+.heart {
+  position: fixed;
+  line-height: 1;
+  text-shadow: 0 2px 0 var(--line);
+  transform: translate(-50%, -50%);
+  animation: heartRise 1.2s ease-out both;
+}
 .petal {
   position: fixed;
   font-size: 1.1rem;
@@ -493,10 +643,28 @@ button.card:hover { background: #46367a; }
 
 /* ---------- Animações ---------- */
 
+/* O número sobe e só começa a sumir na segunda metade */
 @keyframes floatUp {
-  0% { opacity: 1; transform: translate(-50%, -50%) scale(0.8); }
-  20% { transform: translate(-50%, -90%) scale(1.15); }
-  100% { opacity: 0; transform: translate(calc(-50% + var(--drift, 0px)), -260%) scale(1); }
+  0% { opacity: 0; transform: translate(-50%, -30%) scale(0.6); }
+  12% { opacity: 1; transform: translate(-50%, -70%) scale(1.15); }
+  55% { opacity: 1; }
+  100% { opacity: 0; transform: translate(calc(-50% + var(--drift, 0px)), -250%) scale(1); }
+}
+/* Corações sobem balançando de um lado para o outro e somem aos poucos */
+@keyframes heartRise {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.4); }
+  12% { opacity: 1; transform: translate(calc(-50% + var(--sway) * 0.3), calc(-50% - var(--rise) * 0.1)) scale(1); }
+  50% { opacity: 1; transform: translate(calc(-50% - var(--sway)), calc(-50% - var(--rise) * 0.55)) scale(1.05); }
+  100% { opacity: 0; transform: translate(calc(-50% + var(--dx)), calc(-50% - var(--rise))) scale(0.7) rotate(var(--rot)); }
+}
+@keyframes tap {
+  0% { transform: scale(1); box-shadow: 0 8px 0 var(--line), 0 0 0 0 color-mix(in srgb, var(--accent) 70%, transparent); }
+  35% { transform: scale(0.955, 0.965); }
+  100% { transform: scale(1); box-shadow: 0 8px 0 var(--line), 0 0 0 24px transparent; }
+}
+@keyframes talkPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.06); }
 }
 @keyframes petal {
   0% { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(0); }
@@ -524,9 +692,14 @@ button.card:hover { background: #46367a; }
   .bubble { left: 0; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation: none !important;
-    transition: none !important;
-  }
+@media (max-width: 480px) {
+  .tab { font-size: 0.8rem; }
+}
+
+/* Efeitos desligados: pelo botão "Efeitos" ou pela preferência "reduzir movimento" do sistema */
+html[data-motion="off"] *,
+html[data-motion="off"] *::before,
+html[data-motion="off"] *::after {
+  animation: none !important;
+  transition: none !important;
 }
